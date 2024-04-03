@@ -18,6 +18,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
-        scrpit: | 
+        port: ${{ secrets.PORT }}
+        script: | 
           cd /home/ubuntu/seller-api
           git pull
