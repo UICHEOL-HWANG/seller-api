@@ -15,6 +15,6 @@ jobs:
     - name: Set up AWS CLI
       uses: appleboy/ssh-action@v0.1.4
       with:
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        key: ${{ secrets.SSH_KEY }}
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
