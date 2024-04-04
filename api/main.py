@@ -5,6 +5,8 @@ from router.llm.llm_call import router as call_router
 from router.test.test import router as test_router
 from fastapi.middleware.cors import CORSMiddleware
 
+from router.config.crawl.api_crawl import router as test_keyword_router
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -17,8 +19,10 @@ app.add_middleware(
 
 
 # 라우터 포함
+app.include_router(test_keyword_router)
 app.include_router(test_router)
 app.include_router(call_router)
+
 
 # Uvicorn으로 FastAPI 애플리케이션 실행 (개발용)
 if __name__ == '__main__':
