@@ -22,3 +22,5 @@ jobs:
         script: | 
           cd /home/ubuntu/seller-api
           git pull
+          pkill -f gunicorn
+          gunicorn --bind 0:8000 main:app --worker-class uvicorn.workers.UvicornWorker
