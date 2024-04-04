@@ -5,8 +5,7 @@ from .llm_schemas import *
 import os 
 
 # api key 환경변수 설정
-# load_dotenv("/home/ubuntu/seller-api/api/router/llm/.env")
-load_dotenv(r"C:\Users\UICHEOL_HWANG\Desktop\seller\api\router\llm\.env")
+load_dotenv("/home/ubuntu/seller-api/api/router/llm/.env")
 
 host_tmp = os.getenv('host_key')
 api_key_tmp= os.getenv('api')

@@ -25,7 +25,7 @@ jobs:
           pkill -f gunicorn
           sleep 5 
 
-    - name : Restart FastAPI
+    - name : Restart astAPI
       uses : appleboy/ssh-action@v0.1.4
       with:
         key: ${{ secrets.SSH_KEY }}
@@ -33,5 +33,5 @@ jobs:
         username: ${{ secrets.USER }}
         port: ${{ secrets.PORT }}
         script: |  
-          cd /home/ubuntu/seller-api
+          cd /home/ubuntu/seller-api/api
           gunicorn --bind 0:8000 main:app --worker-class uvicorn.workers.UvicornWorker
