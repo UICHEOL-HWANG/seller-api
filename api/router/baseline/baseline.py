@@ -2,6 +2,7 @@ import requests
 import json 
 from .baseline_schemas import *
 import os 
+import pandas as pd
 
 # 라우터 및 body 값에 넣어줄 pydantic
 from fastapi import APIRouter
@@ -50,8 +51,8 @@ async def generate_blog_post_name(request : ProductNameModel):
 async def generate_post_content(request : BlogPostNameModel):
     product_name = request.productname
     title_name = request.contenttitle
-    preset_text =[{"role":"system","content":"- 제품명과 블로그 제목을 통해 블로그 머릿말 생성 \n\n\n제품명 : 맥북 \n블로그 제목 :맥북프로16인치 구입기 (MacBook Pro 16)\n블로그 머릿말 :\\n - 전문가용 고성능 노트북 맥북프로16인치\\n - 4K 고해상도 레티나 디스플레이 탑재\\n - USB-C 타입 단자로 연결성 강화\\n 키보드 백라이트 기능 지원"},{"role":"user","content":"제품명: 애플워치\n블로그 제목 : 애플워치 SE 40mm 실버 알루미늄 케이스와 스포츠 루프 개봉기(Apple Watch SE)"},{"role":"assistant","content":"블로그 머릿말 :\n- 스마트 워치 시장 점유율 1위 애플워치SE\n- 건강 관리 및 다양한 운동 모드 지원\n- 아이폰과의 연동으로 편리한 사용성 제공\n- 세련된 디자인과 다양한 스트랩 선택 가능"},{"role":"user","content":"제품명 : 기계식 키보드\n블로그 제목 : 콕스 CK87 게이트론 LED 게이밍 기계식 키보드 갈축"},{"role":"assistant","content":"블로그 머릿말 :\n- 가성비 좋은 텐키리스 기계식 키보드 추천\n- 경쾌한 타건감의 게이트론 스위치 적용\n- 화이트 단일 LED 백라이트로 깔끔한 디자인\n- 스텝스컬쳐2 설계로 편안한 타이핑 환경 제공"},
-     {"role":"user","content":f"제품명: {product_name} \n블로그 제목 :{title_name} "}]
+    preset_text = [{"role":"system","content":"- 제품명과 블로그 제목을 통해 블로그 머릿말 6개까지 생성\n\n\n제품명 : 맥북 \n블로그 제목 :맥북프로16인치 구입기 (MacBook Pro 16)\n블로그 머릿말 :\\n - 전문가용 고성능 노트북 맥북프로16인치\\n - 4K 고해상도 레티나 디스플레이 탑재\\n - USB-C 타입 단자로 연결성 강화\\n 키보드 백라이트 기능 지원\\n - 맥북 프로 m1 14인치 (Pro) 장점 단점 리뷰\\n - 맥북프로 M1 PRO 14인치 1년 후기, M2 기변은 보류\\n -애플 M3 Pro는 소문대로 역대급 똥망일까? 맥북프로 14인치 스페이스 블랙 언빡싱!"},{"role":"user","content":"제품명: 애플워치\n블로그 제목 : 애플워치 SE 40mm 실버 알루미늄 케이스와 스포츠 루프 개봉기(Apple Watch SE)"},{"role":"assistant","content":"블로그 머릿말 : \n\n- 가성비 좋은 애플워치SE 입문용으로 딱!\n- 심전도 측정이 가능한 애플워치 시리즈6 가격 비교\n- 애플워치 에르메스 에디션 줄질하기 좋은 스마트 워치 추천\n- 애플워치 7세대 41mm GPS 나이키 에디션 운동할 때 필수템\n- 애플워치 se 44mm gps vs 셀룰러 고민 해결해드림\n- 애플워치 울트라 49mm 티타늄 케이스 남자 손목에 어울리는 다이버 워치"}
+               ,{"role":"user","content":f"제품명:{product_name}\n블로그 제목:{title_name}"}]
     request_data = {
         'messages': preset_text,
         'messages.role':'user',
@@ -66,4 +67,6 @@ async def generate_post_content(request : BlogPostNameModel):
         'seed': 0
     }
     completion_executor = CompletionExecutor(host_tmp,api_key_tmp,api_key_primary_val_tmp,request_id_tmp)
-    return completion_executor.execute(request_data)
+    execute = completion_executor.execute(request_data)
+    result = dict(pd.DataFrame(execute["result"]["message"]["content"].split("-")[1:])[0].str.strip())
+    return result
