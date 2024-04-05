@@ -24,7 +24,6 @@ jobs:
           git pull
           pkill -f gunicorn
           sleep 5 
-          
-          cd /home/ubuntu/seller-api/api
           source venv/bin/activate
+          cd /home/ubuntu/seller-api/api
           gunicorn --bind 0:8000 main:app --worker-class uvicorn.workers.UvicornWorker
