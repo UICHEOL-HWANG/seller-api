@@ -1,34 +1,28 @@
+# library
 import requests
 import pandas as pd 
 import hashlib,hmac,base64
 import time
-
 import json
-
-from dotenv import load_dotenv 
-import os 
-
-from ...llm.llm_call import * 
-from ...llm.llm_schemas import *
-
-from .crawl import * 
-
+from fastapi import APIRouter
 import re 
 
-load_dotenv("/home/ubuntu/seller-api/api/.env")
+# Module 
+from config.crawl import *
+from .keyword_schemas import *
+from config.create import CompletionExecutor
+from config.get_api import *
+
+# access_key
+host_tmp, api_key_tmp, api_key_primary_val_tmp, request_id_tmp = issued_keys()
 
 
-host_tmp = os.getenv('host_key')
-api_key_tmp= os.getenv('api')
-api_key_primary_val_tmp = os.getenv('val')
-request_id_tmp = os.getenv('request')
-
-router = APIRouter(prefix="/keyword-test",
-                    tags=["keyword-test"],
+router = APIRouter(prefix="/keyword",
+                    tags=["keyword-section"],
                    responses={404:{"description":"Not Found"}}
                    )
 
-@router.post("/test-keyword")
+@router.post("/generate_keyword")
 def post_request_data(request:CategoryRequestModel):
     product_name = request.product
     title_name = request.title

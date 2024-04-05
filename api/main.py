@@ -1,11 +1,12 @@
 from typing import Union
 import uvicorn
 from fastapi import FastAPI
-from router.llm.llm_call import router as call_router 
-from router.test.test import router as test_router
 from fastapi.middleware.cors import CORSMiddleware
 
-from router.config.crawl.api_crawl import router as test_keyword_router
+#router 
+from router.baseline.baseline import router as content_router
+from router.keyword.keyword import router as keywor_router
+from router.review_content.review_create import router as review_router
 
 app = FastAPI()
 app.add_middleware(
@@ -19,9 +20,9 @@ app.add_middleware(
 
 
 # 라우터 포함
-app.include_router(test_keyword_router)
-app.include_router(test_router)
-app.include_router(call_router)
+app.include_router(content_router)
+app.include_router(keywor_router)
+app.include_router(review_router)
 
 
 # Uvicorn으로 FastAPI 애플리케이션 실행 (개발용)

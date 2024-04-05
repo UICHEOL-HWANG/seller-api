@@ -1,20 +1,15 @@
+# library 
 import requests
 import pandas as pd 
 import hashlib,hmac,base64
 import time
 import json
 
+# module
+from .get_api import *
 
-from dotenv import load_dotenv 
-import os 
-
-load_dotenv("/home/ubuntu/seller-api/api/.env")
-
-base_url = os.getenv("BASE_URL")
-api_key = os.getenv("API_KEY")
-secrets = os.getenv("SECRET_KEY")
-customer_id = os.getenv("CUSTOMER_ID")
-
+# api keys
+BASE_URL,API_KEY,SECRET_KEY,CUSTOMER_ID = naver_issued_keys()
 
 class Signature:
 
@@ -36,13 +31,6 @@ def get_header(method, uri, api_key, secret_key, customer_id):
 
 
 def getresults(hintKeywords):
-    
-    BASE_URL = base_url
-    API_KEY = api_key
-    SECRET_KEY = secrets
-    CUSTOMER_ID = customer_id
-
-
     uri = '/keywordstool'
     method = 'GET'
 

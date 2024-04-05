@@ -1,45 +1,25 @@
 import requests
 import json 
-from dotenv import load_dotenv
-from .llm_schemas import *
+from .baseline_schemas import *
 import os 
-
-# api key 환경변수 설정
-load_dotenv("/home/ubuntu/seller-api/api/router/llm/.env")
-
-host_tmp = os.getenv('host_key')
-api_key_tmp= os.getenv('api')
-api_key_primary_val_tmp = os.getenv('val')
-request_id_tmp = os.getenv('request')
 
 # 라우터 및 body 값에 넣어줄 pydantic
 from fastapi import APIRouter
 
-# clova Api request 
-class CompletionExecutor:
-    def __init__(self, host, api_key, api_key_primary_val, request_id):
-        self._host = host
-        self._api_key = api_key
-        self._api_key_primary_val = api_key_primary_val
-        self._request_id = request_id
-        
-        
+# config
+from config.create import CompletionExecutor
+from config.get_api import * 
 
-    def execute(self, completion_request):
-        headers = {
-            'X-NCP-CLOVASTUDIO-API-KEY': self._api_key,
-            'X-NCP-APIGW-API-KEY': self._api_key_primary_val,
-            'X-NCP-CLOVASTUDIO-REQUEST-ID': self._request_id,
-            'Content-Type': 'application/json; charset=utf-8',
-        }
-        with requests.post(self._host + '/testapp/v1/chat-completions/HCX-003',
-                           headers=headers, json=completion_request, stream=True) as r:
-            return json.loads(r.text)
-        # requests로 요청 받은 값 json 반환
-
+# 개인 key
+host_tmp,api_key_tmp,api_key_primary_val_tmp,request_id_tmp = issued_keys()
 
 # FastAPI 라우터 설정
-router = APIRouter()
+
+router = APIRouter(prefix="/baseline",
+                    tags=["baseline-section"],
+                   responses={404:{"description":"Not Found"}}
+                   )
+
 # prefix 설계 예정
 
 
@@ -76,29 +56,6 @@ async def generate_post_content(request : BlogPostNameModel):
         'messages': preset_text,
         'messages.role':'user',
         'messages.content' : 'content',
-        'topP': 0.8,
-        'topK': 0,
-        'maxTokens': 256,
-        'temperature': 0.5,
-        'repeatPenalty': 5.0,
-        'stopBefore': [],
-        'includeAiFilters': True,
-        'seed': 0
-    }
-    completion_executor = CompletionExecutor(host_tmp,api_key_tmp,api_key_primary_val_tmp,request_id_tmp)
-    return completion_executor.execute(request_data)
-
-
-@router.post("/generate-keyword")
-async def generate_category(request: CategoryRequestModel):
-    product_name = request.product
-    title_name = request.title
-    
-    
-    preset_text =[{"role":"system","content":"제품명과 블로그 제목을 통해 키워드 생성  키워드는 하이픈(-)으로 구분\n제품명: 맥북\n블로그 제목: -애플 노트북 추천, 맥북 에어 M1칩 리뷰\n키워드 추천: -맥북 -맥북프로 -아이패드중고,애플맥북 -맥북중고"},{"role":"user","content":"제품명:밥솥\n블로그 제목:쿠쿠 압력밥솥 리뷰"},{"role":"assistant","content":"키워드 추천 : -밥솥 -쿠쿠압력밥솥 -전기밥솥추천 -압력밥솥가격"},{"role":"user","content":"제품명:오렌지\n블로그 제목: 천혜향 맛있는 리뷰"},{"role":"assistant","content":"키워드 추천 : -오렌지 -천혜향 -한라봉 -황금향"}
-                  ,{"role":"user","content":f"제품명:{product_name}\n블로그 제목:{title_name}"}]
-    request_data = {
-        'messages': preset_text,
         'topP': 0.8,
         'topK': 0,
         'maxTokens': 256,
