@@ -11,6 +11,8 @@ import os
 from ...llm.llm_call import * 
 from ...llm.llm_schemas import *
 
+import re 
+
 load_dotenv(r"/home/ubuntu/seller-api/api/.env")
 
 host_tmp = os.getenv('host_key')
@@ -98,6 +100,7 @@ def post_request_data(request:CategoryRequestModel):
     hintKeywords = cleaned_data
     
     resultdf = getresults(hintKeywords)
+    resultdf['monthlyPcQcCnt'].apply(lambda x: re.sub("<", "", x) if "<" in str(x) else x)
     resultdic = resultdf.loc[:4, ["relKeyword", "monthlyPcQcCnt", "compIdx"]].to_dict()
     
     return resultdic

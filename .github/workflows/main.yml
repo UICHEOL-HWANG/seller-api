@@ -23,15 +23,3 @@ jobs:
           cd /home/ubuntu/seller-api
           git pull
           pkill -f gunicorn
-          sleep 5 
-
-    - name : Restart astAPI
-      uses : appleboy/ssh-action@v0.1.4
-      with:
-        key: ${{ secrets.SSH_KEY }}
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USER }}
-        port: ${{ secrets.PORT }}
-        script: |  
-          cd /home/ubuntu/seller-api/api
-          gunicorn --bind 0:8000 main:app --worker-class uvicorn.workers.UvicornWorker
