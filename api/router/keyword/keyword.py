@@ -49,7 +49,7 @@ def post_request_data(request:CategoryRequestModel):
     hintKeywords = cleaned_data
     
     resultdf = getresults(hintKeywords)
-    resultdf['monthlyPcQcCnt'].apply(lambda x: re.sub("<", "", x) if "<" in str(x) else x)
+    resultdf['monthlyPcQcCnt'] = resultdf['monthlyPcQcCnt'].apply(lambda x: re.sub("<", "", x) if "<" in str(x) else x)
     resultdic = resultdf.loc[:4, ["relKeyword", "monthlyPcQcCnt", "compIdx"]].to_dict()
     
     return resultdic
