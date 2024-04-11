@@ -21,6 +21,7 @@ router = APIRouter(prefix="/re_keyword",
 @router.post("/generate_rekeyowrd")
 async def generate_keyword(request: RekeywordRequests):
     keyword = request.keyword
+    keyword = keyword.replace(" ","")
     hintKeywords = [keyword]
     
     resultdf = getresults(hintKeywords)
